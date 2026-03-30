@@ -1,4 +1,3 @@
-
 # Pseudo Adjustment Layer for GIMP 3 (v1.8)
 
 # English
