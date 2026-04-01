@@ -1,19 +1,17 @@
-# Pseudo Adjustment Layer for GIMP 3 (v1.8)
+# Pseudo Adjustment Layer for GIMP 3 (v1.9)
 
 # English
 ## Overview
 This Python plugin utilizes GIMP 3's new Non-Destructive Editing (NDE) features to simulate a workflow similar to Photoshop's "Adjustment Layers".
 When you apply a filter, it automatically generates a "Layer Group" containing the non-destructive effect and a layer mask, allowing you to readjust the values or partially apply the effect at any time.
 
-## Release Notes (v1.8)
-- Bug Fix: Fixed an issue where the dialog windows (Language selection and Reset List confirmation) were hiding behind the main GIMP window, causing the app to appear frozen.
-- Bug Fix: Suppressed the massive amount of error messages in the Error Console during the "Reset List" process.
-- Bug Fix: Completely rewrote the search logic so it correctly finds filters nested inside all categories, including Favorites and Custom Groups.
-- Bug Fix: Added a forced UI refresh workaround. This bypasses a GIMP 3.2.2 bug where the layer dialog doesn't visually update after applying a filter until you perform an Undo/Redo.
-- New Feature: Added a "Please Wait" loading screen with a spinner during the Reset List process.
-- New Feature: Added support for multiple selection. You can now select multiple filters (using Ctrl or Shift) to perform bulk actions like adding to favorites, moving to groups, or hiding them.
-- Improvement: Introduced a whitelist (safe list) to prevent certain safe filters (like gegl:drop-shadow and gegl:layer-styles) from being mistakenly excluded during internal tests.
-- Improvement: Renamed the "Others" category to "Third-Party Filters" and allowed users to freely organize the filters inside using custom groups.
+## Release Notes (v1.9)
+- Crucial Fix: Solved the problem where the official Drop Shadow could not be used. It was discovered that the internal GEGL name was quietly changed to "gegl:dropshadow" in GIMP 3.2.2, and the plugin has been updated to reflect this correctly.
+- Bug Fix: Fixed an issue where searching inside custom categories like "Third-Party Filters" or "Favorites" yielded no results.
+- Bug Fix: Fixed a bug where applying a filter inside a sub-category would cause the folder to unintentionally collapse or jump to a different category with the same name.
+- Bug Fix: Fixed incorrect procedure names for Layer Styles (updated to gegl:styles to prevent errors).
+- Improvement: The filter menu structure and names now perfectly match the default GIMP 3.2.2 menu, including sub-categories like Render > Pattern and the addition of "...".
+- Improvement: Re-enabled strict compatibility testing for all filters to effectively hide non-NDE legacy scripts and prevent execution errors.
 
 ## Key Features
 - Re-adjustable NDE: Even after applying, you can double-click the "fx" icon on the generated group to bring up the settings dialog and readjust the values at any time.
@@ -37,7 +35,6 @@ When you apply a filter, it automatically generates a "Layer Group" containing t
 
 ## Limitations & Known Issues
 - Due to current GIMP 3.2.2 engine limitations, using the native "Merge Layer Group" option on a group containing NDE filters may not render the effect correctly.
-- In GIMP 3.2.2, there is an internal bug where calling the official Drop Shadow (gegl:drop-shadow) via the Python API throws an error. If you want to use a drop shadow as an adjustment layer, it is highly recommended to install and use third-party alternatives, such as LinuxBeaver's drop shadows (e.g., lb:shadow).
 
 ---
 
@@ -46,15 +43,13 @@ When you apply a filter, it automatically generates a "Layer Group" containing t
 GIMP 3の新しい非破壊編集(NDE)機能を利用して、Photoshopの「調整レイヤー」のようなワークフローを再現するPythonプラグインです。
 フィルタを適用すると、非破壊エフェクトとレイヤーマスクがセットになった「レイヤーグループ」が自動生成され、後からいつでも再調整や部分的な適用が可能になります。
 
-## v1.8の更新内容 (Release Notes)
-- バグ修正: 言語選択やReset List実行時の確認ダイアログが、GIMPのメインウィンドウの裏に隠れてフリーズしたように見える問題を修正しました。
-- バグ修正: Reset List実行時にコンソールに大量のエラーメッセージが出力される問題を抑制しました。
-- バグ修正: 検索機能のロジックを刷新し、すべてのカテゴリ(お気に入りやカスタムグループなど)で正しく検索がヒットするように修正しました。
-- バグ修正: フィルタ適用直後にGIMPのレイヤー一覧が更新されず、Undo/Redoをするまでレイヤーグループが表示されないGIMP 3.2.2のUIバグを回避するため、画面の強制リフレッシュ処理を追加しました。
-- 新機能: Reset Listの処理中に「Please Wait」の待機画面(スピナー)を表示するようにしました。
-- 新機能: 複数選択に対応し、複数フィルタの一括整理(お気に入り追加、グループ移動、非表示など)が可能になりました。
-- 改善: gegl:drop-shadow や gegl:layer-styles などの一部の特殊なフィルタが内部テストで誤って除外されないよう、ホワイトリスト(安全リスト)を導入しました。
-- 改善: 分類できないサードパーティ製フィルタが入るカテゴリ名を「Others」から「Third-Party Filters」に変更し、内部をカスタムグループで自由に整理できるようにしました。
+## v1.9の更新内容 (Release Notes)
+- 重要な修正: 公式のドロップシャドウが使用できなかった問題を解決しました。GIMP 3.2.2で内部名が「gegl:dropshadow」に変更されていたことが判明したため、正しい名前で呼び出せるよう修正しています。
+- バグ修正: 「Third-Party Filters」や「お気に入り」などのカスタムカテゴリ内で検索がヒットしない問題を修正しました。
+- バグ修正: サブグループ(Render > Noiseなど)内のフィルタを適用した際、フォルダが勝手に閉じたり、同名の別カテゴリにジャンプしてしまうアコーディオン機能の誤作動を修正しました。
+- バグ修正: Layer Stylesの内部名が間違っていたためエラーになっていた問題を修正しました(gegl:styles に更新)。
+- 改善: メニューの階層構造やフィルタ名を、GIMP 3.2.2の標準メニューと完全に一致させました(サブカテゴリの再現や「...」の付与など)。
+- 改善: 非破壊編集(NDE)に対応していない古いレガシースクリプトを実行してエラーになるのを防ぐため、内部での適合テストを厳格化してリストから除外するようにしました。
 
 ## 主な機能
 - 再調整可能な非破壊編集: 適用後も、生成されたグループの「fx」アイコンをダブルクリックすることで、いつでも設定ダイアログを呼び出して数値を再調整できます。
@@ -78,4 +73,4 @@ GIMP 3の新しい非破壊編集(NDE)機能を利用して、Photoshopの「調
 
 ## 制限事項・既知の問題
 - GIMP 3.2.2の現在のエンジン制限により、非破壊フィルタが適用されたレイヤーグループに対して標準の「レイヤーグループの統合(Merge Layer Group)」を行うと、エフェクトが正常にレンダリングされない場合があります。
-- GIMP 3.2.2の開発版では、公式のドロップシャドウ (gegl:drop-shadow) をPython APIから呼び出そうとするとエラーになる内部バグが存在します。ドロップシャドウを調整レイヤーとして使用したい場合は、LinuxBeaver氏などが公開しているサードパーティ製のドロップシャドウ(lb:shadowなど)をインストールして使用することを強く推奨します。
+
